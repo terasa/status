@@ -69,7 +69,7 @@
       type: "VAR"
       settable: true
     execute_every_command: true
-    integration_hash: "MBnQpz4yJrb210mPaWLDX7wKmV"
+    integration_hash: "v1ZzQABWJxbo65zAagwOL0EMrN"
   - action: "Check if previous rev is success"
     type: "GIT_HUB_CLI"
     execute_commands:
@@ -99,7 +99,7 @@
       type: "VAR"
       settable: true
     execute_every_command: true
-    integration_hash: "MBnQpz4yJrb210mPaWLDX7wKmV"
+    integration_hash: "v1ZzQABWJxbo65zAagwOL0EMrN"
   - action: "Send notification to Telegram Channel"
     type: "TELEGRAM"
     trigger_time: "ON_FAILURE"
