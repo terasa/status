@@ -104,4 +104,4 @@
     type: "TELEGRAM"
     trigger_time: "ON_FAILURE"
     content: "brak statusu dla executiona w GitHub\n$BUDDY_EXECUTION_URL"
-    integration_hash: "V8og5m6QnXe0XxzGexrLjlyqZR"
+    integration_hash: "Og3KWYxk8mepX3AXeMyJNjQ9vG"
