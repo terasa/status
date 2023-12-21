@@ -101,9 +101,3 @@
       settable: true
     execute_every_command: true
     integration_hash: "v1ZzQABWJxbo65zAagwOL0EMrN"
-  - action: "Send notification to Telegram Channel"
-    type: "TELEGRAM"
-    trigger_time: "ON_FAILURE"
-    run_only_on_first_failure: true
-    content: "brak statusu dla executiona w GitHub\n$BUDDY_EXECUTION_URL"
-    integration_hash: "Og3KWYxk8mepX3AXeMyJNjQ9vG"
