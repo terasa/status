@@ -10,6 +10,7 @@
     - "rm -rf status || true"
     - "git clone https://terasa:$GITHUB_TOKEN@github.com/terasa/status.git"
     - "cd status"
+    - "rm versions*"
     - "for i in {1..4}"
     - "do"
     - "  echo \"$BUDDY_EXECUTION_ID - $i\" >> versions$i.txt"
