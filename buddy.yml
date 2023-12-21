@@ -1,0 +1,107 @@
+- pipeline: "Commit 6x every minute"
+  on: "SCHEDULE"
+  start_date: "2023-12-21T06:44:00Z"
+  delay: 1
+  fail_on_prepare_env_warning: true
+  actions:
+  - action: "Commit x6"
+    type: "GIT_HUB_CLI"
+    execute_commands:
+    - "rm -rf status || true"
+    - "git clone https://terasa:$GITHUB_TOKEN@github.com/terasa/status.git"
+    - "cd status"
+    - "for i in {1..6}"
+    - "do"
+    - "  echo \"$BUDDY_EXECUTION_ID - $i\" >> versions$i.txt"
+    - "  git add versions$i.txt"
+    - "  git config --global user.email \"you@example.com\""
+    - "  git config --global user.name \"Teresa\""
+    - "  git commit -m \"$BUDDY_EXECUTION_ID\""
+    - "  git push --all"
+    - "  sleep 1"
+    - "done"
+    setup_commands:
+    - "apt-get -y update"
+    - "apt-get -y install git"
+    shell: "BASH"
+    integration_hash: "NDm8VvJ4openN3yYe7Az1XPYRr"
+- pipeline: "checkStatus"
+  events:
+  - type: "PUSH"
+    refs:
+    - "refs/heads/main"
+  no_skip_to_most_recent: true
+  fail_on_prepare_env_warning: true
+  variables:
+  - key: "pending"
+    type: "VAR"
+    settable: true
+  - key: "success"
+    type: "VAR"
+    settable: true
+  actions:
+  - action: "Check if current is pending"
+    type: "GIT_HUB_CLI"
+    execute_commands:
+    - "sleep 1"
+    - "response=$(curl -H \"Authorization: token $GITHUB_TOKEN\" \\"
+    - "     -H \"Accept: application/vnd.github.v3+json\" \\"
+    - "     https://api.github.com/repos/terasa/status/commits/$BUDDY_EXECUTION_REVISION/status)"
+    - ""
+    - ""
+    - "echo \"$response\" | grep -q \"pending\""
+    - ""
+    - "if [ $? -eq 0 ]; then"
+    - "    echo \"Buddy status was found in the response\""
+    - "else"
+    - "    echo \"Status for $BUDDY_EXECUTION_REVISION was not set to pending\""
+    - "    exit 1"
+    - "fi"
+    - ""
+    - ""
+    setup_commands:
+    - "apt-get -y update"
+    - "apt-get -y install curl"
+    shell: "BASH"
+    variables:
+    - key: "PRV_REV"
+      value: "b17b08ffdc4db1e8c3c067e802de12460696b942"
+      type: "VAR"
+      settable: true
+    execute_every_command: true
+    integration_hash: "MBnQpz4yJrb210mPaWLDX7wKmV"
+  - action: "Check if previous rev is success"
+    type: "GIT_HUB_CLI"
+    execute_commands:
+    - "response=$(curl -H \"Authorization: token $GITHUB_TOKEN\" \\"
+    - "     -H \"Accept: application/vnd.github.v3+json\" \\"
+    - "     https://api.github.com/repos/terasa/status/commits/$PRV_REV/status)"
+    - ""
+    - "PRV_REV=$(echo $BUDDY_EXECUTION_REVISION)"
+    - ""
+    - "echo \"$response\" | grep -q \"success\""
+    - ""
+    - "if [ $? -eq 0 ]; then"
+    - "    echo \"Buddy status was found in the response\""
+    - "else"
+    - "    echo \"Status for $PRV_REV was not set success\""
+    - "    exit 1"
+    - "fi"
+    - ""
+    - ""
+    setup_commands:
+    - "apt-get -y update"
+    - "apt-get -y install curl"
+    shell: "BASH"
+    variables:
+    - key: "PRV_REV"
+      value: "21a14157413d600b7703559a894d01eb0982ecf2"
+      type: "VAR"
+      settable: true
+    execute_every_command: true
+    integration_hash: "MBnQpz4yJrb210mPaWLDX7wKmV"
+  - action: "Send notification to Telegram Channel"
+    type: "TELEGRAM"
+    trigger_time: "ON_FAILURE"
+    content: "brak statusu dla executiona w GitHub\n$BUDDY_EXECUTION_URL"
+    integration_hash: "V8og5m6QnXe0XxzGexrLjlyqZR"
