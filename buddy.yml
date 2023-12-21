@@ -1,16 +1,16 @@
-- pipeline: "Commit 6x every minute"
+- pipeline: "Commit 4x every minute"
   on: "SCHEDULE"
   start_date: "2023-12-21T06:44:00Z"
   delay: 1
   fail_on_prepare_env_warning: true
   actions:
-  - action: "Commit x6"
+  - action: "Commit x4"
     type: "GIT_HUB_CLI"
     execute_commands:
     - "rm -rf status || true"
     - "git clone https://terasa:$GITHUB_TOKEN@github.com/terasa/status.git"
     - "cd status"
-    - "for i in {1..6}"
+    - "for i in {1..4}"
     - "do"
     - "  echo \"$BUDDY_EXECUTION_ID - $i\" >> versions$i.txt"
     - "  git add versions$i.txt"
